@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Portfolio {
+  id       Int    @id @default(autoincrement())
+  userid   Int?
+  stockid  Int?
+  quantity Int?   @default(0)
+  avgprice Float? @default(0)
+  Stock    Stock? @relation(fields: [stockid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  User     User?  @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Stock {
+  id        Int         @id @default(autoincrement())
+  symbol    String      @unique
+  name      String
+  price     Float
+  createdat DateTime?   @default(now()) @db.Timestamp(6)
+  Portfolio Portfolio[]
+  Trade     Trade[]
+}
+
+model Trade {
+  id        Int       @id @default(autoincrement())
+  userid    Int?
+  stockid   Int?
+  type      String
+  quantity  Int
+  price     Float
+  total     Float
+  createdat DateTime? @default(now()) @db.Timestamp(6)
+  Stock     Stock?    @relation(fields: [stockid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  User      User?     @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Transaction {
+  id        Int       @id @default(autoincrement())
+  userid    Int?
+  type      String
+  amount    Float
+  createdat DateTime? @default(now()) @db.Timestamp(6)
+  User      User?     @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  name        String
+  email       String        @unique
+  password    String
+  createdat   DateTime?     @default(now()) @db.Timestamp(6)
+  Portfolio   Portfolio[]
+  Trade       Trade[]
+  Transaction Transaction[]
+  Wallet      Wallet?
+}
+
+model Wallet {
+  id        Int       @id @default(autoincrement())
+  userid    Int?      @unique
+  balance   Float?    @default(10000)
+  updatedat DateTime? @default(now()) @db.Timestamp(6)
+  User      User?     @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
