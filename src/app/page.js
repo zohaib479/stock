@@ -4,8 +4,8 @@ import PortfolioChart from "./components/PortFolioChart";
 
 export default function Dashboard() {
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Welcome, Investor!</h2>
+    <div className="space-y-6 bg-gray-600">
+      <h2 className="text-2xl font-bold ">Welcome, Investor!</h2>
       
       <section>
         <h3 className="text-xl font-semibold mb-2">Your Portfolio</h3>

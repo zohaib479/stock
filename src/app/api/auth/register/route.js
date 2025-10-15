@@ -1,4 +1,5 @@
 import prisma from "../../../../lib/prisma";
+import bcrypt from "bcryptjs";
 
 export async function POST(req) {
   try {
@@ -13,11 +14,17 @@ export async function POST(req) {
       return Response.json({ error: "User already exists" }, { status: 400 });
     }
 
+    // ✅ Hash the password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = await prisma.user.create({
-      data: { name, email, password },
+      data: { name, email, password: hashedPassword },
     });
 
-    return Response.json(newUser, { status: 201 });
+    return Response.json(
+      { message: "User created successfully", user: newUser },
+      { status: 201 }
+    );
   } catch (error) {
     console.error(error);
     return Response.json({ error: "Something went wrong" }, { status: 500 });

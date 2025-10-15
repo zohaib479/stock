@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleLogin = async () => {
     const res = await fetch("/api/auth/login", {
@@ -13,13 +15,19 @@ export default function LoginPage() {
       body: JSON.stringify({ email, password }),
     });
     const data = await res.json();
-    setMessage(data.error || "Login successful!");
+    if (res.ok) {
+      localStorage.setItem("userId", data.userId);
+      localStorage.setItem("token", data.token);
+      router.push("/portfolio");
+    } else {
+      setError(data.error);
+    }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#0f111a] text-white">
-      <div className="bg-[#1e1e2f] p-10 rounded-lg shadow-lg w-[400px]">
-        <h1 className="text-2xl font-bold mb-6 text-center">Investor Login</h1>
+    <div className="flex items-center justify-center h-screen bg-[#0f111a]">
+      <div className="bg-[#1e1e2f] p-8 rounded shadow-md w-96">
+        <h2 className="text-2xl font-bold mb-6">Investor Login</h2>
         <input
           type="email"
           placeholder="Email"
@@ -32,15 +40,15 @@ export default function LoginPage() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 mb-6 rounded bg-[#2d2d3f]"
+          className="w-full p-2 mb-4 rounded bg-[#2d2d3f]"
         />
         <button
           onClick={handleLogin}
-          className="w-full bg-[#00b894] hover:bg-green-500 p-2 rounded font-semibold"
+          className="w-full bg-[#00b894] p-2 rounded hover:bg-green-500"
         >
           Login
         </button>
-        {message && <p className="mt-4 text-center">{message}</p>}
+        {error && <p className="mt-4 text-red-500">{error}</p>}
       </div>
     </div>
   );
