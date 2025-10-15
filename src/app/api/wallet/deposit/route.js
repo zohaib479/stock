@@ -17,13 +17,19 @@ export async function POST(req) {
     const parsedAmount = parseFloat(amount);
     if (parsedAmount <= 0) return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
 
-    // Update wallet balance
+    // ✅ Fetch wallet, create if not exist
+    let wallet = await prisma.wallet.findUnique({ where: { userid: userId } });
+    if (!wallet) {
+      wallet = await prisma.wallet.create({ data: { userid: userId, balance: 0 } }); // ya default 10000
+    }
+
+    // ✅ Update wallet balance
     const updatedWallet = await prisma.wallet.update({
       where: { userid: userId },
       data: { balance: { increment: parsedAmount } },
     });
 
-    // Record transaction
+    // ✅ Record transaction
     await prisma.transaction.create({
       data: { userid: userId, type: "Deposit", amount: parsedAmount },
     });

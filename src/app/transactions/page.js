@@ -9,7 +9,6 @@ export default function TransactionsPage() {
   const [action, setAction] = useState("Deposit"); // Deposit or Withdraw
   const [message, setMessage] = useState("");
 
-  // Fetch wallet & transactions
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return setLoading(false);
@@ -17,8 +16,12 @@ export default function TransactionsPage() {
     async function fetchData() {
       try {
         const [walletRes, txRes] = await Promise.all([
-          fetch("/api/wallet", { headers: { Authorization: `Bearer ${token}` } }),
-          fetch("/api/transactions", { headers: { Authorization: `Bearer ${token}` } }),
+          fetch("/api/wallet", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch("/api/transactions", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
         ]);
 
         const walletData = await walletRes.json();
@@ -45,12 +48,16 @@ export default function TransactionsPage() {
       return;
     }
 
-    const endpoint = action === "Deposit" ? "/api/wallet/deposit" : "/api/wallet/withdraw";
+    const endpoint =
+      action === "Deposit" ? "/api/wallet/deposit" : "/api/wallet/withdraw";
 
     try {
       const res = await fetch(endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ amount: Number(amount) }),
       });
 
@@ -60,8 +67,13 @@ export default function TransactionsPage() {
       } else {
         setMessage(`✅ ${action} successful!`);
         setBalance(data.newBalance);
-        setTransactions(prev => [
-          { id: Date.now(), type: action, amount: Number(amount), createdAt: new Date().toISOString() },
+        setTransactions((prev) => [
+          {
+            id: Date.now(),
+            type: action,
+            amount: Number(amount),
+            createdAt: new Date().toISOString(),
+          },
           ...prev,
         ]);
         setAmount("");
@@ -72,11 +84,18 @@ export default function TransactionsPage() {
     }
   };
 
-  if (loading) return <p className="text-center mt-10 text-gray-300 animate-pulse">Loading...</p>;
+  if (loading)
+    return (
+      <p className="text-center mt-10 text-gray-300 animate-pulse">
+        Loading...
+      </p>
+    );
 
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col items-center p-4 sm:p-6 md:p-10">
-      <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-center text-white">💰 Wallet & Transactions</h2>
+      <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-center text-white">
+        💰 Wallet & Transactions
+      </h2>
 
       {/* Balance Card */}
       <div className="w-full max-w-md mb-6 p-6 bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-600 rounded-3xl shadow-xl text-center text-white transform transition-transform hover:scale-105">
@@ -109,7 +128,7 @@ export default function TransactionsPage() {
           type="number"
           placeholder="Enter amount"
           value={amount}
-          onChange={e => setAmount(e.target.value)}
+          onChange={(e) => setAmount(e.target.value)}
           className="w-full p-3 rounded-xl bg-gray-700 text-white text-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
         />
 
@@ -124,7 +143,11 @@ export default function TransactionsPage() {
           {action}
         </button>
 
-        {message && <p className="text-center mt-2 text-yellow-400 font-medium animate-pulse">{message}</p>}
+        {message && (
+          <p className="text-center mt-2 text-yellow-400 font-medium animate-pulse">
+            {message}
+          </p>
+        )}
       </div>
 
       {/* Transactions Table */}
@@ -142,20 +165,24 @@ export default function TransactionsPage() {
               </tr>
             </thead>
             <tbody>
-              {transactions
-                .filter(tx => tx.type === "Deposit" || tx.type === "Withdraw")
-                .map(tx => (
-                  <tr
-                    key={tx.id}
-                    className="odd:bg-gray-700 even:bg-gray-800 hover:bg-indigo-900 transition-colors"
+              {transactions.map((tx) => (
+                <tr
+                  key={tx.id}
+                  className="odd:bg-gray-700 even:bg-gray-800 hover:bg-indigo-900 transition-colors"
+                >
+                  <td
+                    className={`p-3 font-semibold ${
+                      tx.type === "Deposit" ? "text-green-400" : "text-red-400"
+                    }`}
                   >
-                    <td className={`p-3 font-semibold ${tx.type === "Deposit" ? "text-green-400" : "text-red-400"}`}>
-                      {tx.type}
-                    </td>
-                    <td className="p-3 text-white">${tx.amount.toFixed(2)}</td>
-                    <td className="p-3 text-gray-300">{new Date(tx.createdAt).toLocaleString()}</td>
-                  </tr>
-                ))}
+                    {tx.type}
+                  </td>
+                  <td className="p-3 text-white">${tx.amount.toFixed(2)}</td>
+                  <td className="p-3 text-gray-300">
+                    {new Date(tx.createdAt).toLocaleString()}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         )}
