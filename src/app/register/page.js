@@ -48,6 +48,10 @@ export default function RegisterPage() {
         >
           Register
         </button>
+        <p className="text-white text-center font-bold">Already have an account </p>
+        <button onClick={()=>{
+            window.location.href='/login'
+        }} className="w-full bg-[#0053b8] p-2 rounded hover:bg-blue-500">Login Now </button>
         {message && <p className="mt-4 text-center">{message}</p>}
       </div>
     </div>

@@ -27,7 +27,7 @@ export default function LoginPage() {
   return (
     <div className="flex items-center justify-center h-screen bg-[#0f111a]">
       <div className="bg-[#1e1e2f] p-8 rounded shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-6">Investor Login</h2>
+        <h2 className=" text-white text-2xl font-bold mb-6">Investor Login</h2>
         <input
           type="email"
           placeholder="Email"
@@ -48,6 +48,10 @@ export default function LoginPage() {
         >
           Login
         </button>
+        <p className="text-white text-center font-bold">Don't have an account </p>
+        <button onClick={()=>{
+            window.location.href='/register'
+        }} className="w-full bg-[#0053b8] p-2 rounded hover:bg-blue-500">Register Now </button>
         {error && <p className="mt-4 text-red-500">{error}</p>}
       </div>
     </div>

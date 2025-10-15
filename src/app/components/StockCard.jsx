@@ -1,12 +1,14 @@
-"use client";
 export default function StockCard({ stock }) {
+  const changeColor = stock.change.includes("-") ? "text-red-400" : "text-green-400";
+
   return (
-    <div className="bg-[#2d2d3f] p-4 rounded shadow hover:scale-105 transition-transform">
-      <h4 className="font-bold text-lg">{stock.name}</h4>
-      <p>Price: ${stock.price}</p>
-      <p className={stock.change.startsWith("+") ? "text-green-400" : "text-red-500"}>
-        {stock.change}
-      </p>
+    <div className="bg-gray-700 rounded-2xl p-4 shadow-md hover:shadow-lg transition-all duration-200">
+      <h4 className="text-lg font-bold">{stock.symbol}</h4>
+      <p className="text-gray-300">{stock.name}</p>
+      <div className="flex justify-between items-center mt-2">
+        <p className="text-xl font-semibold">${stock.price}</p>
+        <p className={`${changeColor} text-sm`}>{stock.change}</p>
+      </div>
     </div>
   );
 }
