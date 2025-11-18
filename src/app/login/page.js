@@ -26,7 +26,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex items-center justify-center h-screen bg-[#0f111a]">
-      <div className="bg-[#1e1e2f] p-8 rounded shadow-md w-96">
+      <div className="bg-[#1e1e2f] p-8 rounded shadow-md w-96 text-white">
         <h2 className=" text-white text-2xl font-bold mb-6">Investor Login</h2>
         <input
           type="email"

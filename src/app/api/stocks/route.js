@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     // Fetch all stocks from your "Stock" table
+    //select * from stock
     const stocks = await prisma.stock.findMany({
       select: {
         id: true,

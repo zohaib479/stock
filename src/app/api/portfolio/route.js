@@ -3,22 +3,16 @@ import jwt from "jsonwebtoken";
 
 export async function GET(req) {
   try {
-    // 1️⃣ Token nikaal lo from headers
     const authHeader = req.headers.get("authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Missing token" }), {
         status: 401,
-      });
-    }
-
+      });}
     const token = authHeader.split(" ")[1];
     if (!token) {
       return new Response(JSON.stringify({ error: "Invalid token format" }), {
         status: 401,
-      });
-    }
-
-    // 2️⃣ Decode the token
+      });}
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -28,34 +22,28 @@ export async function GET(req) {
         status: 403,
       });
     }
-
-    const userId = decoded.id; // Token se userID
+    const userId = decoded.id; //jwt token decoding
     console.log("✅ Authenticated user ID:", userId);
-
-    // 3️⃣ Fetch user + wallet
+//using joins inner/equi joins
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: { Wallet: true },
     });
-
     if (!user) {
       return new Response(JSON.stringify({ error: "User not found" }), {
         status: 404,
       });
     }
-
-    // 4️⃣ Fetch portfolio + stock info
+//one more join use kia
     const portfolio = await prisma.portfolio.findMany({
       where: { userid: userId },
       include: { Stock: true },
     });
-
     const holdings = portfolio.map((p) => {
       const totalInvested = p.quantity * p.avgprice;
       const currentValue = p.quantity * p.Stock.price;
       const profitLoss = currentValue - totalInvested;
       const profitPercent = ((profitLoss / totalInvested) * 100).toFixed(2);
-
       return {
         stockId: p.Stock.id,
         stockSymbol: p.Stock.symbol,
@@ -69,14 +57,12 @@ export async function GET(req) {
         profitPercent: isFinite(profitPercent) ? profitPercent : "0.00",
       };
     });
-
-    // 5️⃣ Trade History
+//join ik or
     const trades = await prisma.trade.findMany({
       where: { userid: userId },
       include: { Stock: true },
       orderBy: { createdat: "desc" },
     });
-
     const history = trades.map((t) => ({
       id: t.id,
       type: t.type,
@@ -86,8 +72,6 @@ export async function GET(req) {
       total: t.total,
       createdAt: t.createdat,
     }));
-
-    // 6️⃣ Response
     const response = {
       user: {
         id: user.id,
@@ -100,7 +84,6 @@ export async function GET(req) {
       portfolio: holdings,
       tradeHistory: history,
     };
-
     return new Response(JSON.stringify(response), { status: 200 });
   } catch (error) {
     console.error("❌ Portfolio fetch failed:", error);
