@@ -17,7 +17,7 @@ export async function POST(req) {
     const wallet = await prisma.wallet.findUnique({ where: { userid: userId } });
     if (!wallet) return NextResponse.json({ error: "Wallet not found" }, { status: 404 });
     if (wallet.balance < parsedAmount) return NextResponse.json({ error: "Insufficient balance" }, { status: 400 });
-    // Update wallet
+    // Update wallet //means yaha bh join lagega
     const updatedWallet = await prisma.wallet.update({
       where: { userid: userId },
       data: { balance: { decrement: parsedAmount } },

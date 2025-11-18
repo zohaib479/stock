@@ -1,12 +1,13 @@
 "use client";
 import { useState } from "react";
-
+import { useRouter } from "next/navigation";
 export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-
+  
+const router = useRouter();
   const handleRegister = async () => {
     const res = await fetch("/api/auth/register", {
       method: "POST",
@@ -15,6 +16,7 @@ export default function RegisterPage() {
     });
     const data = await res.json();
     setMessage(data.error || "Registration successful!");
+    router.push("/login");
   };
 
   return (

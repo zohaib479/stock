@@ -38,18 +38,17 @@ export default function PortfolioPage() {
   if (loading) return <p className="text-center mt-10 text-lg">Loading...</p>;
   if (!data) return <p className="text-center mt-10 text-lg">No portfolio data found.</p>;
 
-  // 🎯 Calculate total portfolio value
+  //  total portfolio value
   const totalPortfolioValue = data.portfolio.reduce(
     (sum, s) => sum + parseFloat(s.currentValue),
     0
   );
 
-  // 🎯 Pie chart data for visual share distribution
+  //  Pie chart data for vizualization
   const pieData = data.portfolio.map((s) => ({
     name: s.stockSymbol,
     value: parseFloat(s.currentValue),
   }));
-
   const COLORS = ["#22c55e", "#3b82f6", "#f97316", "#ef4444", "#a855f7", "#14b8a6"];
 
   return (
@@ -71,7 +70,7 @@ export default function PortfolioPage() {
         <p className="text-xl  font-semibold text-white">{data.user?.name}</p>
         <p className="text-white">{data.user?.email}</p>
         <p className="mt-3 text-lg text-white font-medium">
-          💰 Wallet Balance:{" "}
+          $$ Wallet Balance:{" "}
           <span className="text-green-600 font-bold">${data.wallet?.balance ?? 0}</span>
         </p>
         <p className="mt-1 text-white">
