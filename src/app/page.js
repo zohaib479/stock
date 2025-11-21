@@ -66,7 +66,7 @@ export default function Dashboard() {
 
       {/* Footer */}
       <footer className="text-center text-gray-500 mt-8 text-sm sm:text-base">
-        © {new Date().getFullYear()} StockX | Powered by Prisma + Next.js
+        © {new Date().getFullYear()} StockX || DB Project  
       </footer>
     </div>
   );

@@ -58,7 +58,7 @@ export default function PortfolioPage() {
         animate={{ opacity: 1, y: 0 }}
         className="text-3xl font-bold mb-6 text-center text-white"
       >
-        📊 My Portfolio Dashboard
+         My Portfolio Dashboardd
       </motion.h1>
 
       {/* USER + WALLET CARD */}
